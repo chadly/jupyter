@@ -5,8 +5,8 @@
 	},
 	"runArgs": ["--gpus", "all"],
 
-	"workspaceMount": "source=${localWorkspaceFolder},target=/home/jovyan/app,type=bind",
-	"workspaceFolder": "/home/jovyan/app",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/jovyan/${localWorkspaceFolderBasename},type=bind",
+	"workspaceFolder": "/home/jovyan/${localWorkspaceFolderBasename}",
 
 	"customizations": {
 		"vscode": {
