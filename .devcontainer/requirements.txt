@@ -1,3 +1,8 @@
 ipython
 ipykernel
 pandas
+replicate
+openai
+pyautogen
+docker
+python-dotenv
