@@ -9,18 +9,20 @@ services:
     depends_on:
       ctx:
         condition: service_completed_successfully
-    build:
-      context: database
-      dockerfile: postgres.dockerfile
+    image: postgres
     restart: always
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
+      - "./database/scripts:/docker-entrypoint-initdb.d:Z"
       - "./database/data:/var/lib/postgresql/data:Z"
+    healthcheck: 
+      interval: 10s
+      retries: 10
+      test: "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""
+      timeout: 2s
 
   pgadmin:
     depends_on:
@@ -39,11 +41,22 @@ services:
     ports:
       - "8420:80"
 
-  app:
-    build: .
+  nocodb:
     depends_on:
       db:
         condition: service_healthy
+    image: nocodb/nocodb:latest
+    restart: always
+    environment:
+      NC_DB: "pg://db:5432?u=${POSTGRES_USER}&p=${POSTGRES_PASSWORD}&d=nocodb"
+      NC_AUTH_JWT_SECRET: "569a1821-0a93-45e8-87ab-eb857f20a010"
+    volumes:
+      - "./database/nocodb:/usr/app/data:Z"
+    ports:
+      - "8440:8080"
+
+  app:
+    build: .
     deploy:
       resources:
         reservations:

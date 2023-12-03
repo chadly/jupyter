@@ -20,4 +20,9 @@ if [ ! -d /app/notebook/agent_workspace ]; then
     mkdir -p /app/notebook/agent_workspace
 fi
 
+if [ ! -d /app/database/nocodb ]; then 
+    echo "Creating nocodb directory..."
+    mkdir -p /app/database/nocodb
+fi
+
 echo "Initialization complete."
