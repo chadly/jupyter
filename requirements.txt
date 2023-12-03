@@ -6,8 +6,3 @@ openai
 pyautogen
 docker
 python-dotenv
-
-google-api-python-client
-youtube-transcript-api
-pytube
-pyairtable

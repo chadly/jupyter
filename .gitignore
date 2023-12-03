@@ -1,5 +1,7 @@
 OAI_CONFIG_LIST
 agent_workspace
+data
+pgadmin_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
