@@ -1,14 +1,5 @@
 services:
-  ctx:
-    image: alpine
-    volumes:
-      - .:/app
-    command: /app/init.sh
-
   db:
-    depends_on:
-      ctx:
-        condition: service_completed_successfully
     image: postgres
     restart: always
     environment:
@@ -17,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - "./database/scripts:/docker-entrypoint-initdb.d:Z"
-      - "./database/data:/var/lib/postgresql/data:Z"
+      - "./database/data/pg:/var/lib/postgresql/data:Z"
     healthcheck: 
       interval: 10s
       retries: 10
@@ -28,8 +19,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      ctx:
-        condition: service_completed_successfully
     image: dpage/pgadmin4
     restart: always
     environment:
@@ -37,25 +26,14 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     user: root
     volumes:
-      - "./database/pgadmin_data:/var/lib/pgadmin:Z"
+      - "./database/data/pgadmin:/var/lib/pgadmin:Z"
     ports:
       - "8420:80"
 
-  nocodb:
+  notebook:
     depends_on:
       db:
         condition: service_healthy
-    image: nocodb/nocodb:latest
-    restart: always
-    environment:
-      NC_DB: "pg://db:5432?u=${POSTGRES_USER}&p=${POSTGRES_PASSWORD}&d=nocodb"
-      NC_AUTH_JWT_SECRET: "569a1821-0a93-45e8-87ab-eb857f20a010"
-    volumes:
-      - "./database/nocodb:/usr/app/data:Z"
-    ports:
-      - "8440:8080"
-
-  app:
     build: .
     deploy:
       resources:
