@@ -3,6 +3,6 @@ ipykernel
 pandas
 replicate
 openai
-pyautogen
+ag2
 docker
 python-dotenv
